@@ -1,0 +1,17 @@
+#!/usr/bin/ansible-playbook
+---
+- hosts: {{ linux_hostname }}
+  become: true
+  become_user: root
+
+  tasks:
+   - name: include variables for devices
+     include_vars:
+        file: ip-edl.yml
+        name: ip-edl
+
+    - name: Insert New Line under the Regex configuration
+      lineinfile:
+        path: /var/www/html/dag/subnets-edl.txt
+        line: {{ ip }}
+        loop: "{{ lookup('dict', ip-edl, wantlist=True) }}"
